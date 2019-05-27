@@ -31,6 +31,10 @@
 #include "base/win/windows_version.h"
 #endif
 
+#if defined(CASTANETS)
+#include "base/distributed_chromium_util.h"
+#endif
+
 namespace base {
 namespace {
 
@@ -143,6 +147,10 @@ void UnlockPages(const SharedMemory& memory, size_t offset, size_t length) {
 
 DiscardableSharedMemory::DiscardableSharedMemory()
     : mapped_size_(0), locked_page_count_(0) {
+#if defined(CASTANETS)
+  if (Castanets::IsEnabled())
+    shared_memory_.SetDiscardable(true);
+#endif
 }
 
 DiscardableSharedMemory::DiscardableSharedMemory(
@@ -150,6 +158,10 @@ DiscardableSharedMemory::DiscardableSharedMemory(
     : shared_memory_(shared_memory_handle, false),
       mapped_size_(0),
       locked_page_count_(0) {
+#if defined(CASTANETS)
+  if (Castanets::IsEnabled())
+    shared_memory_.SetDiscardable(true);
+#endif
 }
 
 DiscardableSharedMemory::~DiscardableSharedMemory() {
@@ -271,8 +283,11 @@ DiscardableSharedMemory::LockResult DiscardableSharedMemory::Lock(
 }
 
 void DiscardableSharedMemory::Unlock(size_t offset, size_t length) {
-#if !defined(CASTANETS)
-  DCHECK_EQ(AlignToPageSize(offset), offset);
+#if defined(CASTANETS)
+  if (!base::Castanets::IsEnabled())
+    DCHECK_EQ(AlignToPageSize(offset), offset);
+#else
+    DCHECK_EQ(AlignToPageSize(offset), offset);
 #endif
   DCHECK_EQ(AlignToPageSize(length), length);
 

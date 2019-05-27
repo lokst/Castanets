@@ -151,7 +151,7 @@ static void RequestRunService(DBusMessage* msg, DBusConnection* conn,
                                            info->address, info->service_port);
       DPRINT(COMM, DEBUG_INFO, "Request to run service is sent\n");
       stat = TRUE;
-    } else if (pTunClient->HasTarget()) {
+    } else if (pTunClient && pTunClient->HasTarget()) {
       unsigned long addr = pTunClient->GetTarget();
       if (addr) {
         //TODO(Hyunduk Kim) - Remove hardcoded port
@@ -298,19 +298,23 @@ int ClientRunner::Run() {
       Monitor* meta = new Monitor;
       INT32 magic = sequence_id * 100 + i;
       sprintf(meta->id, UUIDS_MDC, magic);
-      strncpy(meta->address, info->address, strlen(info->address));
+      strncpy(meta->address, info->address, sizeof(meta->address));
       meta->service_port = info->service_port;
       meta->monitor_port = info->monitor_port;
 
       meta->client = new MonitorClient(meta->id);
-      meta->message_handle = GetThreadMsgInterface(meta->id);
-      monitor_manager.AddTail(meta);
+      if (meta->client->Start(info->address, info->monitor_port)) {
+        meta->message_handle = GetThreadMsgInterface(meta->id);
+        CSTI<CbDispatcher>::getInstancePtr()->Subscribe(
+            MONITOR_RESPONSE_EVENT, (void*)meta->message_handle, OnMonitorClientEvent);
+        monitor_manager.AddTail(meta);
 
-      CSTI<CbDispatcher>::getInstancePtr()->Subscribe(
-          MONITOR_RESPONSE_EVENT, (void*)meta->message_handle, OnMonitorClientEvent);
-      meta->client->Start(info->address, info->monitor_port);
-      CHAR* monitor_packet = const_cast<CHAR*>("QUERY-MONITORING");
-      meta->client->DataSend(monitor_packet, strlen(monitor_packet) + 1);
+        CHAR* monitor_packet = const_cast<CHAR*>("QUERY-MONITORING");
+        meta->client->DataSend(monitor_packet, strlen(monitor_packet) + 1);
+      } else {
+	SAFE_DELETE(meta->client);
+        SAFE_DELETE(meta);
+      }
     }
     sp->InvalidateServiceList();
 

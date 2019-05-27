@@ -57,8 +57,10 @@ const char kForceFieldTrials[]              = "force-fieldtrials";
 const char kNoErrorDialogs[]                = "noerrdialogs";
 
 #if defined(CASTANETS)
-// Specify distributed chrome server address.
-const char kServerAddress[]                 = "server-address";
+// Specifies a profile of the browser process to propagate to the renderer.
+const char kBrowserOSType[] = "browser-os-type";
+// Enable features for distributed chromium.
+const char kEnableCastanets[]     = "enable-castanets";
 #if defined(NETWORK_SHARED_MEMORY)
 const char kNetworkSharedMemoryPath[]           = "network-shared-memory-path";
 #endif

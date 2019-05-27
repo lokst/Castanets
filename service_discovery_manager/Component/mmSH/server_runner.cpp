@@ -28,10 +28,14 @@
 #include "discovery_server.h"
 #include "Dispatcher.h"
 #include "monitor_server.h"
-#include "NetTunProc.h"
 #include "osal.h"
 #include "service_server.h"
 #include "TPL_SGT.h"
+
+#if defined (ENABLE_STUN)
+#include "NetTunProc.h"
+#endif
+
 #if defined (WIN32)
 #include "spawn_controller.h"
 #endif
@@ -52,7 +56,8 @@ static void OnDiscoveryServerEvent(int wParam,
 }
 
 ServerRunner::ServerRunner(ServerRunnerParams& params)
-    : params_(params) {}
+    : params_(params),
+      keep_running_(true) {}
 
 ServerRunner::~ServerRunner() {}
 
@@ -90,14 +95,11 @@ int ServerRunner::Run() {
                                                   (void*)mh_discovery_server,
                                                   OnDiscoveryServerEvent);
 
-  // TODO: MonitorServer for Android should be implemented.
-#if !defined(ANDROID)
   MonitorServer* monitor_server = new MonitorServer(UUIDS_MDS);
   if (!monitor_server->Start(params_.monitor_port)) {
     DPRINT(COMM, DEBUG_ERROR, "Cannot start monitor server\n");
     return 1;
   }
-#endif
 
   CServiceServer* handle_service_server =
       new CServiceServer(UUIDS_SRS, params_.exec_path.c_str());
@@ -106,6 +108,7 @@ int ServerRunner::Run() {
     return 1;
   }
 
+#if defined (ENABLE_STUN)
   CNetTunProc* pTunClient = NULL;
   if (params_.with_presence) {
     pTunClient = new CNetTunProc(
@@ -116,6 +119,7 @@ int ServerRunner::Run() {
     pTunClient->SetRole(CRouteTable::RENDERER);
     pTunClient->Create();
   }
+#endif
 
 #if defined(WIN32)&& defined(RUN_AS_SERVICE)
   while (WaitForSingleObject(ev_term, 0) != WAIT_OBJECT_0) {
@@ -128,21 +132,28 @@ int ServerRunner::Run() {
       }
     }
 
+    if (!keep_running_)
+      break;
+
     __OSAL_Sleep(1000);
   }
 
   handle_discovery_server->Close();
   SAFE_DELETE(handle_discovery_server);
 
-#if !defined(ANDROID)
   monitor_server->Stop();
   SAFE_DELETE(monitor_server);
-#endif
 
   handle_service_server->StopServer();
   SAFE_DELETE(handle_service_server);
 
+#if defined (ENABLE_STUN)
   SAFE_DELETE(pTunClient);
+#endif
 
   return 0;
+}
+
+void ServerRunner::Stop() {
+    keep_running_ = false;
 }
