@@ -7,8 +7,8 @@ os:
 
 env:
     - BUILD_TYPE=Default
-    - EXEC = chrome
-    - SRC = src
+    - EXEC=chrome
+    - SRC=src
 
 install:
     - cd ..
