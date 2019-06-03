@@ -1,0 +1,32 @@
+language: cpp
+
+os:
+    - linux
+
+env:
+    - BUILD_TYPE=Default
+    - EXE = chrome
+
+install:
+    - git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git ../depot_tools/
+    - export PATH="$PATH:$PWD/../depot_tools"
+
+before_script:
+    - build/install-build-deps.sh
+    - build/create_gclient.sh
+    - gclient sync --with_branch_head
+    - gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/${BUILD_TYPE}
+
+script:
+    - ninja -C out/${BUILD_TYPE} ${EXE}
+
+notifications:
+    email:
+        - seikwon.kim@samsung.com
+
+    email:
+        recipients:
+            - seikwon.kim@samsung.com
+        on_success: change # <always|never|change>
+        on_failure: always  # <always|never|change>
+
