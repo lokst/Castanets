@@ -1,6 +1,6 @@
 language: cpp
 
-sudo: true
+sudo: required
 
 os:
     - linux
@@ -13,10 +13,14 @@ env:
     - EXEC=chrome
     - SRC=src
 
-install:
-    #- cd ..
+before_install:
     - if [ ! -e depot_tools/gclient ]; then git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; fi
     - export PATH="$PATH:$PWD/depot_tools"
+
+install:
+    #- cd ..
+    #- if [ ! -e depot_tools/gclient ]; then git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; fi
+    #- export PATH="$PATH:$PWD/depot_tools"
       #- git clone https://github.com/$TRAVIS_REPO_SLUG.git ${SRC}
       #- cd ${SRC}
     - sudo build/install-build-deps.sh --no-prompt
