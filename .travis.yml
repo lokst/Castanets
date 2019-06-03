@@ -9,10 +9,7 @@ dist:
     - xenial
 
 env:
-    - BUILD_TYPE=Default
-    - EXEC=chrome
-    - SRC=src
-    - TRAVIS_DEBUG_MODE=true
+    - BUILD_TYPE=Default EXEC=chrome SRC=src TRAVIS_DEBUG_MODE=true
 
 before_install:
     - if [ ! -e depot_tools/gclient ]; then git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; fi
