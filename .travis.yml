@@ -14,11 +14,11 @@ install:
     - cd ..
     - if [ ! -e depot_tools/gclient ]; then git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; fi
     - export PATH="$PATH:$PWD/depot_tools"
-    - git clone https://github.com/$TRAVIS_REPO_SLUG.git ${SRC}
-    - cd ${SRC}
+      #- git clone https://github.com/$TRAVIS_REPO_SLUG.git ${SRC}
+      #- cd ${SRC}
+    - sudo build/install-build-deps.sh --no-prompt
 
 before_script:
-    - sudo build/install-build-deps.sh --no-prompt
     - build/create_gclient.sh
     - gclient sync --with_branch_head
     - gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/${BUILD_TYPE}
