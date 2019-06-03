@@ -5,6 +5,9 @@ sudo: true
 os:
     - linux
 
+dist: 
+    - xenial
+
 env:
     - BUILD_TYPE=Default
     - EXEC=chrome
