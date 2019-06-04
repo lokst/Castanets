@@ -6,22 +6,22 @@ os:
     - linux
 
 dist: 
-    - xenial
+        - xenial
 
 env:
-    - BUILD_TYPE=Default EXEC=chrome SRC=src TRAVIS_DEBUG_MODE=true
+    - BUILD_TYPE=Default EXEC=chrome SRC=src # TRAVIS_DEBUG_MODE=true
 
 before_install:
+    - cd ..
     - if [ ! -e depot_tools/gclient ]; then git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; fi
     - export PATH="$PATH:$PWD/depot_tools"
+    - yes | sudo add-apt-repository ppa:git-core/ppa
+    - sudo apt-get update
 
 install:
-    #- cd ..
-    #- if [ ! -e depot_tools/gclient ]; then git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; fi
-    #- export PATH="$PATH:$PWD/depot_tools"
-      #- git clone https://github.com/$TRAVIS_REPO_SLUG.git ${SRC}
-      #- cd ${SRC}
-    - sudo build/install-build-deps.sh --no-prompt
+    - git clone https://github.com/Samsung/castanets ${SRC}
+    - cd ${SRC}
+    - yes | sudo build/install-build-deps.sh
 
 before_script:
     - build/create_gclient.sh
@@ -32,9 +32,6 @@ script:
     - ninja -C out/${BUILD_TYPE} ${EXEC}
 
 notifications:
-    email:
-        - seikwon.kim@samsung.com
-
     email:
         recipients:
             - seikwon.kim@samsung.com
