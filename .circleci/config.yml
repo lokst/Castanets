@@ -2,13 +2,6 @@ environment:
     BUILD_TYPE: Default
     EXEC: chrome
     SRC: src
-env-setup: &env-setup
-    run:
-        name: Set Variables
-        command: |
-            echo 'export BUILD_TYPE=Default"' >> $BASH_ENV
-            echo 'export EXEC=chrome"' >> $BASH_ENV
-            echo 'export SRC=src"' >> $BASH_ENV
 
 docker-image: &docker-image
     docker:
@@ -33,20 +26,20 @@ step-depot-tools-add-to-path: &step-depot-tools-add-to-path
 
 step-checkout-castanets: &step-checkout-castanets
     checkout:
-        path: $SRC
+        path: src #$SRC
 
 step-build-deps: &step-build-deps
     run:
         name: Install build dependencies
         command: |
-            cd $SRC
+            cd src #$SRC
             yes | sudo build/install-build-deps.sh || true
 
 step-gclient: &step-gclient
     run:
         name: Install and sync gclient
         command: |
-            cd $SRC
+            cd src #$SRC
             build/create_gclient.sh
             gclient sync --with_branch_head
 
@@ -54,16 +47,16 @@ step-generate-castanets-build-args: &step-generate-castanets-build-args
     run:
         name: Set build argument for Castanets
         command: |
-            cd $SRC
-            gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/$BUILD_TYPE
+            cd src #$SRC
+            gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/Default #$BUILD_TYPE
 
 step-castanets-build: &step-castanets-build
     run:
         name: Ninja build Castanets
         no_output_timeout: 2h
         command: |
-            cd $SRC
-            ninja -C out/${BUILD_TYPE} ${EXEC}
+            cd src #$SRC
+            ninja -C out/Default chrome #${BUILD_TYPE} ${EXEC}
 
 
 # Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
@@ -74,7 +67,6 @@ jobs:
             - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
     
         steps:
-            - *env-setup
             - *step-set-git
             - *step-depot-tools-get
             - *step-checkout-castanets
