@@ -6,6 +6,7 @@ environment:
 docker-image: &docker-image
     docker:
         - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
+          user: travis
 
 step-set-git: &step-set-git
     run:
@@ -17,12 +18,14 @@ step-set-git: &step-set-git
 step-depot-tools-get: &step-depot-tools-get
     run:
         name: Get depot tools
-        command: git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
+        command: |
+            git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
 step-depot-tools-add-to-path: &step-depot-tools-add-to-path
     run:
         name: Add depot tools to PATH
-        command: echo 'export PATH="$PATH:'"$PWD"'/depot_tools"' >> $BASH_ENV
+        command: |
+            echo 'export PATH="$PATH:'"$PWD"'/depot_tools"' >> $BASH_ENV
 
 step-checkout-castanets: &step-checkout-castanets
     checkout:
