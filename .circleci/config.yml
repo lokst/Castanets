@@ -1,4 +1,4 @@
-env-setting: &env-setting
+environment: 
     BUILD_TYPE: Default
     EXEC: chrome
     SRC: src
@@ -65,12 +65,8 @@ jobs:
     build: 
         docker:
             - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
-    environment: 
-        BUILD_TYPE: Default
-        EXEC: chrome
-        SRC: src
     
-steps:
+    steps:
         - *step-set-git
         - *step-depot-tools-get
         - *step-checkout-castanets
