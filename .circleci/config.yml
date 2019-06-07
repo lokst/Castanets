@@ -6,13 +6,13 @@ environment:
 docker-image: &docker-image
     docker:
         - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
-          user: travis
+          auth:
+              username: travis
 
 step-set-git: &step-set-git
     run:
         name: Set Git
         command: |
-            su - travis
             yes | sudo add-apt-repository ppa:git-core/ppa || true
             sudo apt-get update
 
@@ -20,14 +20,12 @@ step-depot-tools-get: &step-depot-tools-get
     run:
         name: Get depot tools
         command: |
-            su - travis
             git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
 
 step-depot-tools-add-to-path: &step-depot-tools-add-to-path
     run:
         name: Add depot tools to PATH
         command: |
-            su - travis
             echo 'export PATH="$PATH:'"$PWD"'/depot_tools"' >> $BASH_ENV
 
 step-checkout-castanets: &step-checkout-castanets
@@ -39,14 +37,12 @@ step-checkout-travis-castanets: &step-checkout-travis-castanets
     run:
         name: Get depot tools
         command: |
-            su - travis
             git clone https://github.com/Samsung/castanets src
 
 step-build-deps: &step-build-deps
     run:
         name: Install build dependencies
         command: |
-            su - travis
             cd src 
             #$SRC
             yes | sudo build/install-build-deps.sh || true
@@ -55,7 +51,6 @@ step-gclient: &step-gclient
     run:
         name: Install and sync gclient
         command: |
-            su - travis
             cd src 
             #$SRC
             build/create_gclient.sh
@@ -65,7 +60,6 @@ step-generate-castanets-build-args: &step-generate-castanets-build-args
     run:
         name: Set build argument for Castanets
         command: |
-            su - travis
             cd src 
             #$SRC
             gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/Default 
@@ -76,7 +70,6 @@ step-castanets-build: &step-castanets-build
         name: Ninja build Castanets
         no_output_timeout: 2h
         command: |
-            su - travis
             cd src 
             #$SRC
             ninja -C out/Default chrome 
