@@ -69,6 +69,7 @@ jobs:
         steps:
             - *step-set-git
             - *step-depot-tools-get
+            - *step-depot-tools-add-to-path
             - *step-checkout-castanets
             - *step-build-deps
             - *step-gclient
