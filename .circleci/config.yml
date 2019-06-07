@@ -6,9 +6,9 @@ env-setup: &env-setup
     run:
         name: Set Variables
         command: |
-            export BUILD_TYPE=Default
-            export EXEC=chrome
-            export SRC=src
+            echo 'export BUILD_TYPE=Default"' >> $BASH_ENV
+            echo 'export EXEC=chrome"' >> $BASH_ENV
+            echo 'export SRC=src"' >> $BASH_ENV
 
 docker-image: &docker-image
     docker:
