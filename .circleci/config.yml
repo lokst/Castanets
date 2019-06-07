@@ -26,20 +26,23 @@ step-depot-tools-add-to-path: &step-depot-tools-add-to-path
 
 step-checkout-castanets: &step-checkout-castanets
     checkout:
-        path: src #$SRC
+        path: src 
+            #$SRC
 
 step-build-deps: &step-build-deps
     run:
         name: Install build dependencies
         command: |
-            cd src #$SRC
+            cd src 
+            #$SRC
             yes | sudo build/install-build-deps.sh || true
 
 step-gclient: &step-gclient
     run:
         name: Install and sync gclient
         command: |
-            cd src #$SRC
+            cd src 
+            #$SRC
             build/create_gclient.sh
             gclient sync --with_branch_head
 
@@ -47,16 +50,20 @@ step-generate-castanets-build-args: &step-generate-castanets-build-args
     run:
         name: Set build argument for Castanets
         command: |
-            cd src #$SRC
-            gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/Default #$BUILD_TYPE
+            cd src 
+            #$SRC
+            gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/Default 
+            #$BUILD_TYPE
 
 step-castanets-build: &step-castanets-build
     run:
         name: Ninja build Castanets
         no_output_timeout: 2h
         command: |
-            cd src #$SRC
-            ninja -C out/Default chrome #${BUILD_TYPE} ${EXEC}
+            cd src 
+            #$SRC
+            ninja -C out/Default chrome 
+            #${BUILD_TYPE} ${EXEC}
 
 
 # Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
