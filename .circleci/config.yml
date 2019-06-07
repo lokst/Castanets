@@ -6,8 +6,7 @@ environment:
 docker-image: &docker-image
     docker:
         - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
-          auth:
-              username: travis
+          user: travis
 
 step-set-git: &step-set-git
     run:
@@ -35,7 +34,7 @@ step-checkout-castanets: &step-checkout-castanets
 
 step-checkout-travis-castanets: &step-checkout-travis-castanets
     run:
-        name: Get depot tools
+        name:  Checkout Castanets
         command: |
             git clone https://github.com/Samsung/castanets src
 
