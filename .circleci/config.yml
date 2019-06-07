@@ -11,7 +11,7 @@ step-set-git: &step-set-git
     run:
         name: Set Git
         command: |
-            yes | sudo add-apt-repository ppa:git-core/ppa
+            yes | sudo add-apt-repository ppa:git-core/ppa || true
             sudo apt-get update
 
 step-depot-tools-get: &step-depot-tools-get
@@ -33,7 +33,7 @@ step-build-deps: &step-build-deps
         name: Install build dependencies
         command: |
             cd $SRC
-            yes | sudo build/install-build-deps.sh
+            yes | sudo build/install-build-deps.sh || true
 
 step-gclient: &step-gclient
     run:

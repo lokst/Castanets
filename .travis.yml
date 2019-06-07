@@ -6,7 +6,7 @@ os:
     - linux
 
 dist: 
-        - xenial
+    - xenial
 
 env:
     - BUILD_TYPE=Default EXEC=chrome SRC=src # TRAVIS_DEBUG_MODE=true
