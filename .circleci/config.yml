@@ -66,11 +66,11 @@ jobs:
         docker:
             - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
     
-    steps:
-        - *step-set-git
-        - *step-depot-tools-get
-        - *step-checkout-castanets
-        - *step-build-deps
-        - *step-gclient
-        - *step-generate-castanets-build-args
-        - *step-castanets-build
+        steps:
+            - *step-set-git
+            - *step-depot-tools-get
+            - *step-checkout-castanets
+            - *step-build-deps
+            - *step-gclient
+            - *step-generate-castanets-build-args
+            - *step-castanets-build
