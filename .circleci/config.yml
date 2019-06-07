@@ -2,6 +2,13 @@ environment:
     BUILD_TYPE: Default
     EXEC: chrome
     SRC: src
+env-setup: &env-setup
+    run:
+        name: Set Variables
+        command: |
+            export BUILD_TYPE=Default
+            export EXEC=chrome
+            export SRC=src
 
 docker-image: &docker-image
     docker:
@@ -26,7 +33,7 @@ step-depot-tools-add-to-path: &step-depot-tools-add-to-path
 
 step-checkout-castanets: &step-checkout-castanets
     checkout:
-        path: src
+        path: $SRC
 
 step-build-deps: &step-build-deps
     run:
@@ -67,6 +74,7 @@ jobs:
             - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
     
         steps:
+            - *env-setup
             - *step-set-git
             - *step-depot-tools-get
             - *step-checkout-castanets
