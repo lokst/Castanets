@@ -29,15 +29,7 @@ before_script:
     - gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/${BUILD_TYPE}
 
 script:
-    - ninja -C out/${BUILD_TYPE} -j32 mojo
-    - ninja -C out/${BUILD_TYPE} -j32 services/service_manager/embedder
-    - ninja -C out/${BUILD_TYPE} -j32 headless:headless_shell_lib
-    - ninja -C out/${BUILD_TYPE} -j32 content/public/common:service_names
-    - ninja -C out/${BUILD_TYPE} -j32 content/public/app:both
-    - ninja -C out/${BUILD_TYPE} -j32 chrome/installer/util:with_no_strings
-    - ninja -C out/${BUILD_TYPE} -j32 child_dependencies
-    - ninja -C out/${BUILD_TYPE} -j32 browser_dependencies
-    - ninja -C out/${BUILD_TYPE} -j32 chrome
+    - ninja -C out/${BUILD_TYPE} chrome -v
     #    - travis_wait 50 ninja -C out/${BUILD_TYPE} ${EXEC}
 
 notifications:
