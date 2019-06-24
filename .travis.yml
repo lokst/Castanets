@@ -29,7 +29,8 @@ before_script:
     - gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/${BUILD_TYPE}
 
 script:
-    - travis_wait 50 ninja -C out/${BUILD_TYPE} ${EXEC}
+    - ninja -C out/${BUILD_TYPE} ${EXEC}
+    #    - travis_wait 50 ninja -C out/${BUILD_TYPE} ${EXEC}
 
 notifications:
     email:
