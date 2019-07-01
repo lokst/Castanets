@@ -13,7 +13,7 @@ env:
 
 before_install:
     - docker pull seikwon/castanets_69_base:first
-    - docker run --name castanets -dit seikwon/castanets_69_base /sbin/init
+    - docker run --name castanets -dit seikwon/castanets_69_base:first /sbin/init
 
 install:
     - docker exec -ti castanets -c "cd ~/src && git pull"
