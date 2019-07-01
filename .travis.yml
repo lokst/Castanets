@@ -2,34 +2,27 @@ language: cpp
 
 sudo: required
 
-os:
-    - linux
-
 dist: 
     - xenial
+
+services:
+    - docker
 
 env:
     - BUILD_TYPE=Default EXEC=chrome SRC=src # TRAVIS_DEBUG_MODE=true
 
 before_install:
-    - cd ..
-    - if [ ! -e depot_tools/gclient ]; then git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git; fi
-    - export PATH="$PATH:$PWD/depot_tools"
-    - yes | sudo add-apt-repository ppa:git-core/ppa
-    - sudo apt-get update
+    - docker pull seikwon/castanets_69_base:first
+    - docker run --name castanets -dit seikwon/castanets_69_base /sbin/init
 
 install:
-    - git clone https://github.com/Samsung/castanets ${SRC}
-    - cd ${SRC}
-    - yes | sudo build/install-build-deps.sh
+    - docker exec -ti castanets -c "cd ~/src && git pull"
 
 before_script:
-    - build/create_gclient.sh
-    - gclient sync --with_branch_head
-    - gn gen --args='enable_castanets=true enable_nacl=false is_debug=false is_component_build=true' out/${BUILD_TYPE}
+    - docker exec -ti castanets -c "export PATH=\"$PATH:$PWD/depot_tools\""
 
 script:
-    - ninja -C out/${BUILD_TYPE} chrome -v
+    - docker exec -ti castanets -c "cd ~/src && ninja -C out/Default chrome"
     #    - travis_wait 50 ninja -C out/${BUILD_TYPE} ${EXEC}
 
 notifications:
