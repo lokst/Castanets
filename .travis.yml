@@ -16,13 +16,13 @@ before_install:
     - docker run --name castanets -dit seikwon/castanets_69_base:first /sbin/init
 
 install:
-    - docker exec -ti castanets -c "cd ~/src && git pull"
+    - docker exec -ti castanets bash -c "cd ~/src && git pull"
 
 before_script:
-    - docker exec -ti castanets -c "export PATH=\"$PATH:$PWD/depot_tools\""
+    - docker exec -ti castanets bash -c "export PATH=\"$PATH:$PWD/depot_tools\""
 
 script:
-    - docker exec -ti castanets -c "cd ~/src && ninja -C out/Default chrome"
+    - docker exec -ti castanets bash -c "cd ~/src && ninja -C out/Default chrome"
     #    - travis_wait 50 ninja -C out/${BUILD_TYPE} ${EXEC}
 
 notifications:
