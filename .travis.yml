@@ -13,17 +13,21 @@ env:
 
 before_install:
     - docker pull seikwon/castanets_69_base:first
-    - docker run --name castanets -dit seikwon/castanets_69_base:first /sbin/init
+    - docker run --name castanets2 --rm -i -t seikwon/castanets_69_base:first bash
+      #- docker run --name castanets -dit seikwon/castanets_69_base:first /sbin/init
 
 install:
-    - docker exec -ti castanets bash -c "cd ~/src && git pull"
+    #    - docker exec -ti castanets bash -c "cd ~/src && git pull"
+    - cd ~/src 
+    - git pull
 
 before_script:
-    - docker exec -ti castanets bash -c "export PATH=\"$PATH:$PWD/depot_tools\""
+    # - docker exec -ti castanets bash -c "export PATH=\"$PATH:/root/depot_tools\""
+    - export PATH=$PATH:/root/depot_tools
 
 script:
-    - docker exec -ti castanets bash -c "cd ~/src && ninja -C out/Default chrome"
-    #    - travis_wait 50 ninja -C out/${BUILD_TYPE} ${EXEC}
+    - cd ~/src 
+    - ninja -C out/Default chrome
 
 notifications:
     email:
