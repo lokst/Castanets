@@ -20,6 +20,8 @@ before_install:
 
 script:
         #docker exec -ti castanets bash -c "cd ~/src && git pull origin refs/pull/${TRAVIS_BRANCH}/head --no-edit";
+    - echo $TRAVIS_PULL_REQUEST
+    - echo $TRAVIS_BRANCH
     - |
       if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "castanets_63"]; then
         docker exec -ti castanets bash -c "cd ~/src && git pull --no-edit";
