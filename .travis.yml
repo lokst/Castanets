@@ -15,8 +15,8 @@ env:
     - BUILD_TYPE=Default EXEC=chrome SRC=src # TRAVIS_DEBUG_MODE=true
 
 before_install:
-    #    - docker pull seikwon/castanets_69_base:latest
-    #- docker run --name castanets -dit seikwon/castanets_69_base:latest /sbin/init
+    - docker pull seikwon/castanets_69_base:latest
+    - docker run --name castanets -dit seikwon/castanets_69_base:latest /sbin/init
 
 script:
         #docker exec -ti castanets bash -c "cd ~/src && git pull origin refs/pull/${TRAVIS_BRANCH}/head --no-edit";
