@@ -5,6 +5,9 @@ sudo: required
 dist: 
     - xenial
 
+git:
+    clone: false
+
 services:
     - docker
 
@@ -18,8 +21,7 @@ before_install:
 script:
         #docker exec -ti castanets bash -c "cd ~/src && git pull origin refs/pull/${TRAVIS_BRANCH}/head --no-edit";
     - |
-      if [[ "$TRAVIS_PULL_REQUEST" != "false" ]] && [[ "TRAVIS_BRANCH" = "castanets_63"]];
-      then
+      if [[ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "TRAVIS_BRANCH" = "castanets_63"]]; then
         docker exec -ti castanets bash -c "cd ~/src && git pull --no-edit";
         docker exec -ti castanets bash -c "cd ~/src && git pull origin refs/pull/135/head --no-edit";
         docker exec -ti -e PATH=$PATH:/root/depot_tools castanets bash -c "cd ~/src && ninja -C out/Default chrome";
