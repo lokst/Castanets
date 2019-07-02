@@ -15,9 +15,19 @@ before_install:
     - docker pull seikwon/castanets_69_base:first
     - docker run --name castanets -dit seikwon/castanets_69_base:first /sbin/init
 
-script:
-    - docker exec -ti -e PATH=$PATH:/root/depot_tools castanets bash -c "cd ~/src && git pull && ninja -C out/Default chrome"
+before_script:
+    - if [[ "$TRAVIS_PULL_REQUEST" != "false" ]];
+      then
+        docker exec -ti castanets bash -c "cd ~/src && git fetch origin +refs/heads/${TRAVIS_BRANCH}:refs/remotes/origin/${TRAVIS_BRANCH};"
+      fi
 
+script:
+    - if [[ "$TRAVIS_PULL_REQUEST" != "false" ]];
+      then
+        docker exec -ti castanets bash -c "cd ~/src && git pull"
+        docker exec -ti castanets bash -c "cd ~/src && git fetch origin +refs/heads/${TRAVIS_BRANCH}:refs/remotes/origin/${TRAVIS_BRANCH};"
+        docker exec -ti -e PATH=$PATH:/root/depot_tools castanets bash -c "cd ~/src && ninja -C out/Default chrome"
+      fi
 after_script:
     - docker stop castanets
 
