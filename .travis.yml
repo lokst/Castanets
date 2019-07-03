@@ -12,12 +12,13 @@ services:
     - docker
 
 env:
-    - GIT_BRANCH=castanets_63 
-    - DOCKER_ID=seikwon/castanets_69_base DOCKER_TAG=latest DOCKER_CONTAINER=castanets
+    - GIT_BRANCH=castanets_63 DOCKER_IMAGE=seikwon/castanets_69_base DOCKER_TAG=latest DOCKER_CONTAINER=castanets
 
 before_install:
-    - docker pull $DOCKER_ID:$DOCKER_TAG
-    - docker run --name $DOCKER_CONTAINER -dit $DOCKER_ID:$DOCKER_TAG /sbin/init
+    - echo $DOCKER_IMAGE
+    - echo $DOCKER_TAG
+    - docker pull $DOCKER_IMAGE:$DOCKER_TAG
+    - docker run --name $DOCKER_CONTAINER -dit $DOCKER_IMAGE:$DOCKER_TAG /sbin/init
 
 before_script:
     - echo $TRAVIS_PULL_REQUEST
