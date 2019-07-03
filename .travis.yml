@@ -27,7 +27,7 @@ before_script:
     - docker exec -ti $DOCKER_CONTAINER bash -c "cd ~/src && git pull --no-edit";
     - |
         if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" = "$GIT_BRANCH" ]; then
-            docker exec -ti $DOCKER_CONTAINER bash -c "cd ~/src && git pull origin refs/pull/135/head --no-edit";
+            docker exec -ti $DOCKER_CONTAINER bash -c "cd ~/src && git pull origin refs/pull/137/head --no-edit";
         fi
 
 script:
