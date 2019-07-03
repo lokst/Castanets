@@ -23,8 +23,7 @@ script:
     - echo $TRAVIS_PULL_REQUEST
     - echo $TRAVIS_BRANCH
     - echo TEST
-    - |
-      if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "castanets_63"]; then
+    - if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "castanets_63"]; then
         docker exec -ti castanets bash -c "cd ~/src && git pull --no-edit";
         docker exec -ti castanets bash -c "cd ~/src && git pull origin refs/pull/137/head --no-edit";
         docker exec -ti -e PATH=$PATH:/root/depot_tools castanets bash -c "cd ~/src && ninja -C out/Default chrome";
