@@ -12,7 +12,7 @@ services:
     - docker
 
 env:
-    - BUILD_TYPE=Default EXEC=chrome SRC=src # TRAVIS_DEBUG_MODE=true
+    - BRANCH=castanets_63 BUILD_TYPE=Default EXEC=chrome SRC=src
 
 before_install:
     - docker pull seikwon/castanets_69_base:latest
@@ -21,9 +21,9 @@ before_install:
 before_script:
     - echo $TRAVIS_PULL_REQUEST
     - echo $TRAVIS_BRANCH
-    - echo TEST
+    - echo $BRANCH
     - docker exec -ti castanets bash -c "cd ~/src && git pull --no-edit";
-    - if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "castanets_63"]; then
+    - if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "$BRANCH"]; then
         docker exec -ti castanets bash -c "cd ~/src && git pull origin refs/pull/137/head --no-edit";
       fi
 
