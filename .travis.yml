@@ -12,27 +12,28 @@ services:
     - docker
 
 env:
-    - BRANCH=castanets_63 BUILD_TYPE=Default EXEC=chrome SRC=src
+    - GIT_BRANCH=castanets_63 
+    - DOCKER_ID=seikwon/castanets_69_base DOCKER_TAG=latest DOCKER_CONTAINER=castanets
 
 before_install:
-    - docker pull seikwon/castanets_69_base:latest
-    - docker run --name castanets -dit seikwon/castanets_69_base:latest /sbin/init
+    - docker pull $DOCKER_ID:$DOCKER_TAG
+    - docker run --name $DOCKER_CONTAINER -dit $DOCKER_ID:$DOCKER_TAG /sbin/init
 
 before_script:
     - echo $TRAVIS_PULL_REQUEST
     - echo $TRAVIS_BRANCH
     - echo $BRANCH
-    - docker exec -ti castanets bash -c "cd ~/src && git pull --no-edit";
+    - docker exec -ti $DOCKER_CONTAINER bash -c "cd ~/src && git pull --no-edit";
     - |
-      if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "$BRANCH"]; then
-        docker exec -ti castanets bash -c "cd ~/src && git pull origin refs/pull/137/head --no-edit";
+      if [ "$TRAVIS_PULL_REQUEST" != "false" ] && [ "$TRAVIS_BRANCH" == "$GIT_BRANCH"]; then
+        docker exec -ti $DOCKER_CONTAINER bash -c "cd ~/src && git pull origin refs/pull/137/head --no-edit";
       fi
 
 
 script:
-    - docker exec -ti -e PATH=$PATH:/root/depot_tools castanets bash -c "cd ~/src && ninja -C out/Default chrome";
+    - docker exec -ti -e PATH=$PATH:/root/depot_tools $DOCKER_CONTAINER bash -c "cd ~/src && ninja -C out/Default chrome";
 after_script:
-    - docker stop castanets
+    - docker stop $DOCKER_CONTAINER
 
 notifications:
     email:
