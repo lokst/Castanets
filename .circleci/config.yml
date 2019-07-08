@@ -47,7 +47,7 @@ version: 2.1
 jobs:
     build: 
         docker:
-            - image: seikwon/castanets_69_base:190708_1342
+            - image: seikwon/castanets_69_base@sha256:9d00afa02a2633206715a7bcd7a2216bf0951bede563184318b6a5b3f31eaba7
     
         steps:
             - *step-update-git
