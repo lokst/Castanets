@@ -47,7 +47,7 @@ version: 2.1
 jobs:
     build: 
         docker:
-            - image: seikwon/castanets_69_base
+            - image: seikwon/castanets_69_base:latest
     
         steps:
             - *step-update-git
