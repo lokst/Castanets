@@ -1,59 +1,3 @@
-environment: 
-    BUILD_TYPE: Default
-    EXEC: chrome
-    SRC: src
-
-docker-image: &docker-image
-    docker:
-        - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
-          user: travis
-
-step-set-git: &step-set-git
-    run:
-        name: Set Git
-        command: |
-            yes | sudo add-apt-repository ppa:git-core/ppa || true
-            sudo apt-get update
-
-step-depot-tools-get: &step-depot-tools-get
-    run:
-        name: Get depot tools
-        command: |
-            git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-
-step-depot-tools-add-to-path: &step-depot-tools-add-to-path
-    run:
-        name: Add depot tools to PATH
-        command: |
-            echo 'export PATH="$PATH:'"$PWD"'/depot_tools"' >> $BASH_ENV
-
-step-checkout-castanets: &step-checkout-castanets
-    checkout:
-        path: src 
-            #$SRC
-
-step-checkout-travis-castanets: &step-checkout-travis-castanets
-    run:
-        name:  Checkout Castanets
-        command: |
-            git clone https://github.com/Samsung/castanets src
-
-step-build-deps: &step-build-deps
-    run:
-        name: Install build dependencies
-        command: |
-            cd src 
-            #$SRC
-            yes | sudo build/install-build-deps.sh || true
-
-step-gclient: &step-gclient
-    run:
-        name: Install and sync gclient
-        command: |
-            cd src 
-            #$SRC
-            build/create_gclient.sh
-            gclient sync --with_branch_head
 
 step-generate-castanets-build-args: &step-generate-castanets-build-args
     run:
@@ -74,21 +18,38 @@ step-castanets-build: &step-castanets-build
             ninja -C out/Default chrome 
             #${BUILD_TYPE} ${EXEC}
 
+step-update-git: &step-update-git
+    run:
+        name: Update Git Repo
+        command: |
+            cd ~/src
+            git pull --no-edit
+
+step-merge-pull-request: &step-merge-pull-request
+    run:
+        name: Merge Pull request
+        command: |
+            if [ "$CIRCLE_PR_NUMBER" != "false" ] && [ "$CIRCLE_BRANCH" = "castanets_63" ]; then
+                cd ~/src && git pull origin refs/pull/137/head --no-edit
+            else
+                echo "$CIRCLE_PR_NUMBER" && echo "$CIRCLE_BRANCH"
+            fi
+
+step-build-image: &step-build-image
+    run:
+        name: Build image
+        command: |
+            cd ~/src && ninja -C out/Default chrome
+
 
 # Use the latest 2.1 version of CircleCI pipeline processing engine, see https://circleci.com/docs/2.0/configuration-reference/
 version: 2.1
 jobs:
     build: 
         docker:
-            - image: travisci/ci-sardonyx:packer-1553530531-f909ac5
+            - image: seikwon/castanets_69_base
     
         steps:
-            - *step-set-git
-            - *step-depot-tools-get
-            - *step-depot-tools-add-to-path
-              #- *step-checkout-castanets
-            - *step-checkout-travis-castanets
-            - *step-build-deps
-            - *step-gclient
-            - *step-generate-castanets-build-args
-            - *step-castanets-build
+            - *step-update-git
+            - *step-merge-pull-request
+            - *step-build-image
